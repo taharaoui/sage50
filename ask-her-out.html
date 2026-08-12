@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Question</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;1,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FFF3F8;
+    --bg-2: #FFE3F0;
+    --hot-pink: #FF5FA2;
+    --periwinkle: #7B6EF6;
+    --mint: #57D9A3;
+    --plum: #2E1A38;
+    --plum-soft: #6B5A72;
+    --white: #FFFFFF;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: radial-gradient(circle at 20% 20%, var(--bg-2), var(--bg) 60%);
+    color: var(--plum);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* floating ambient shapes */
+  .floaty {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.35;
+    filter: blur(1px);
+    animation: drift 12s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes drift {
+    0%, 100% { transform: translateY(0) translateX(0) rotate(0deg); }
+    50% { transform: translateY(-24px) translateX(12px) rotate(12deg); }
+  }
+
+  .stage {
+    position: relative;
+    width: min(92vw, 560px);
+    text-align: center;
+    padding: 56px 40px 48px;
+    background: var(--white);
+    border-radius: 32px;
+    box-shadow: 0 30px 60px -20px rgba(123, 110, 246, 0.35), 0 8px 20px -8px rgba(255, 95, 162, 0.25);
+    z-index: 2;
+    transition: transform 0.4s cubic-bezier(.2,1.4,.4,1);
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--periwinkle);
+    background: #F1EEFF;
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 22px;
+  }
+
+  h1 {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: clamp(30px, 6vw, 42px);
+    line-height: 1.15;
+    margin: 0 0 14px;
+    color: var(--plum);
+  }
+
+  h1 span.highlight {
+    color: var(--hot-pink);
+    position: relative;
+    white-space: nowrap;
+  }
+
+  .subtext {
+    font-size: 16px;
+    color: var(--plum-soft);
+    margin: 0 0 36px;
+    line-height: 1.5;
+  }
+
+  .btn-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    min-height: 64px;
+    position: relative;
+  }
+
+  button {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    border: none;
+    border-radius: 999px;
+    padding: 16px 34px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  button:focus-visible {
+    outline: 3px solid var(--periwinkle);
+    outline-offset: 3px;
+  }
+
+  #yesBtn {
+    background: var(--hot-pink);
+    color: white;
+    box-shadow: 0 10px 24px -8px rgba(255, 95, 162, 0.6);
+  }
+  #yesBtn:hover { transform: translateY(-3px) scale(1.04); }
+  #yesBtn:active { transform: translateY(0) scale(0.98); }
+
+  #noBtn {
+    background: #F4F1FF;
+    color: var(--periwinkle);
+    position: relative;
+    transition: transform 0.18s ease-out, left 0.18s ease-out, top 0.18s ease-out;
+  }
+
+  .no-caption {
+    margin-top: 14px;
+    font-size: 13.5px;
+    color: var(--plum-soft);
+    min-height: 18px;
+    font-style: italic;
+  }
+
+  /* success state */
+  .stage.success h1 { color: var(--plum); }
+  .success-emoji {
+    font-size: 56px;
+    margin-bottom: 8px;
+    display: inline-block;
+    animation: pop 0.5s cubic-bezier(.2,1.6,.4,1);
+  }
+  @keyframes pop {
+    0% { transform: scale(0); }
+    70% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+
+  .hidden { display: none !important; }
+
+  /* plan / itinerary */
+  .plan {
+    text-align: left;
+    margin-top: 8px;
+  }
+
+  .plan-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .plan-time {
+    flex: 0 0 72px;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--periwinkle);
+    padding-top: 3px;
+  }
+
+  .plan-item-open .plan-time {
+    color: var(--hot-pink);
+  }
+
+  .plan-body {
+    flex: 1;
+    padding-bottom: 4px;
+  }
+
+  .plan-title {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--plum);
+    margin-bottom: 2px;
+  }
+
+  .plan-desc {
+    font-size: 13.5px;
+    color: var(--plum-soft);
+    line-height: 1.4;
+  }
+
+  .plan-connector {
+    width: 2px;
+    height: 22px;
+    background: #F0EBFF;
+    margin-left: 35px;
+  }
+
+  .plan-input {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 2px solid #F0EBFF;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    color: var(--plum);
+    background: #FBFAFF;
+    transition: border-color 0.15s ease;
+  }
+  .plan-input:focus {
+    outline: none;
+    border-color: var(--periwinkle);
+  }
+
+  .plan-save {
+    margin-top: 10px;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 13.5px;
+    padding: 9px 20px;
+    border-radius: 999px;
+    background: var(--mint);
+    color: white;
+    box-shadow: none;
+  }
+  .plan-save:hover { transform: translateY(-2px); }
+
+  .plan-saved {
+    margin-top: 10px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--mint);
+  }
+
+  /* confetti */
+  .confetti-piece {
+    position: fixed;
+    top: -20px;
+    width: 9px;
+    height: 14px;
+    opacity: 0.9;
+    z-index: 5;
+    pointer-events: none;
+    animation: fall linear forwards;
+  }
+  @keyframes fall {
+    to { transform: translateY(110vh) rotate(600deg); opacity: 0.7; }
+  }
+
+  footer {
+    position: fixed;
+    bottom: 16px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 12px;
+    color: var(--plum-soft);
+    opacity: 0.55;
+    z-index: 2;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .floaty, .success-emoji, .confetti-piece { animation: none !important; }
+    #noBtn { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="floaty" style="width:90px;height:90px;background:var(--hot-pink);top:8%;left:8%;"></div>
+  <div class="floaty" style="width:60px;height:60px;background:var(--periwinkle);top:70%;left:12%;animation-delay:2s;"></div>
+  <div class="floaty" style="width:70px;height:70px;background:var(--mint);top:15%;right:10%;animation-delay:4s;"></div>
+  <div class="floaty" style="width:50px;height:50px;background:var(--periwinkle);bottom:12%;right:14%;animation-delay:1s;"></div>
+
+  <div class="stage" id="stage">
+
+    <div id="askView">
+      <div class="eyebrow">💌 An important question</div>
+      <h1>Will you go out<br>with <span class="highlight">me?</span></h1>
+      <p class="subtext">Take your time. There's really only one good answer.</p>
+
+      <div class="btn-row">
+        <button id="yesBtn">Yes, obviously 💕</button>
+        <button id="noBtn">No</button>
+      </div>
+      <div class="no-caption" id="noCaption">&nbsp;</div>
+    </div>
+
+    <div id="successView" class="hidden">
+      <div class="success-emoji">🎉</div>
+      <h1>Knew it.</h1>
+      <p class="subtext">Here's what I'm thinking. Last stop's up to you.</p>
+
+      <div class="plan">
+        <div class="plan-item">
+          <div class="plan-time">8:00 PM</div>
+          <div class="plan-body">
+            <div class="plan-title">Drinks at Lovebird</div>
+            <div class="plan-desc">Cozy speakeasy, live jazz, Old Montreal.</div>
+          </div>
+        </div>
+        <div class="plan-connector"></div>
+        <div class="plan-item">
+          <div class="plan-time">9:30 PM</div>
+          <div class="plan-body">
+            <div class="plan-title">Night drive</div>
+            <div class="plan-desc">Windows down, city lights, no particular rush to get anywhere.</div>
+          </div>
+        </div>
+        <div class="plan-connector"></div>
+        <div class="plan-item plan-item-open">
+          <div class="plan-time">???</div>
+          <div class="plan-body">
+            <div class="plan-title">Your call</div>
+            <div class="plan-desc">Pick the last stop, or how the night ends.</div>
+            <input type="text" id="herSuggestion" class="plan-input" placeholder="type your idea here..." maxlength="120">
+            <button id="saveSuggestion" class="plan-save">Save it</button>
+            <div class="plan-saved hidden" id="savedNote">Locked in ✓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>made with a little bit of nerve</footer>
+
+<script>
+  const noBtn = document.getElementById('noBtn');
+  const yesBtn = document.getElementById('yesBtn');
+  const stage = document.getElementById('stage');
+  const askView = document.getElementById('askView');
+  const successView = document.getElementById('successView');
+  const noCaption = document.getElementById('noCaption');
+  const btnRow = document.querySelector('.btn-row');
+
+  const captions = [
+    "nice try",
+    "are you sure?",
+    "really?",
+    "come on now",
+    "the button is shy",
+    "not happening",
+    "keep trying though",
+    "getting warmer? no.",
+    "you had one job",
+    "okay this is just cardio now"
+  ];
+  let dodgeCount = 0;
+
+  function moveNoButton() {
+    const rowRect = btnRow.getBoundingClientRect();
+    const btnRect = noBtn.getBoundingClientRect();
+
+    const maxX = Math.max(rowRect.width - btnRect.width, 40);
+    const maxY = Math.max(120 - btnRect.height, 20);
+
+    const newX = Math.random() * maxX - maxX / 2;
+    const newY = (Math.random() * maxY) - maxY / 2;
+
+    noBtn.style.position = 'relative';
+    noBtn.style.left = newX + 'px';
+    noBtn.style.top = newY + 'px';
+
+    dodgeCount++;
+    noCaption.textContent = captions[Math.min(dodgeCount - 1, captions.length - 1)];
+
+    // shrink "no" slightly and grow "yes" slightly each dodge, capped
+    const scale = Math.max(0.55, 1 - dodgeCount * 0.05);
+    noBtn.style.transform = `scale(${scale})`;
+    const yesScale = Math.min(1.35, 1 + dodgeCount * 0.03);
+    yesBtn.style.transform = `scale(${yesScale})`;
+  }
+
+  noBtn.addEventListener('mouseenter', moveNoButton);
+  noBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    moveNoButton();
+  });
+  noBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    moveNoButton();
+  }, { passive: false });
+
+  function launchConfetti() {
+    const colors = ['#FF5FA2', '#7B6EF6', '#57D9A3', '#FFD166'];
+    for (let i = 0; i < 90; i++) {
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      piece.style.left = Math.random() * 100 + 'vw';
+      piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.animationDuration = (2.5 + Math.random() * 2) + 's';
+      piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      document.body.appendChild(piece);
+      setTimeout(() => piece.remove(), 5000);
+    }
+  }
+
+  yesBtn.addEventListener('click', () => {
+    askView.classList.add('hidden');
+    successView.classList.remove('hidden');
+    stage.classList.add('success');
+    launchConfetti();
+  });
+
+  const suggestionInput = document.getElementById('herSuggestion');
+  const saveBtn = document.getElementById('saveSuggestion');
+  const savedNote = document.getElementById('savedNote');
+
+  saveBtn.addEventListener('click', async () => {
+    const message = suggestionInput.value.trim();
+    if (message.length === 0) {
+      suggestionInput.focus();
+      return;
+    }
+
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Sending...';
+
+    try {
+      // First submission will trigger a one-time confirmation email from Formspree — click it to activate.
+      await fetch('https://formspree.io/raoui.taha03@gmail.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ suggestion: message })
+      });
+    } catch (err) {
+      // Fails silently for her; the "Locked in" note still shows either way.
+      console.error('Could not send notification email:', err);
+    }
+
+    savedNote.textContent = `Locked in ✓ — "${message}"`;
+    savedNote.classList.remove('hidden');
+    suggestionInput.disabled = true;
+    saveBtn.textContent = 'Saved';
+    saveBtn.style.opacity = '0.5';
+    saveBtn.style.cursor = 'default';
+  });
+
+  suggestionInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') saveBtn.click();
+  });
+</script>
+
+</body>
+</html>
